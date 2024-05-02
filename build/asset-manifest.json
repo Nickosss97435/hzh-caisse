@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.5edd4b9a.css",
+    "main.js": "/static/js/main.5df54da0.js",
+    "static/media/Golden3Dlogo.png": "/static/media/Golden3Dlogo.5c7acf8d5c45422a9ebf.png",
+    "static/media/logo.svg": "/static/media/logo.66390a01cf7b27d52fb01fc57cb95c68.svg",
+    "index.html": "/index.html",
+    "main.5edd4b9a.css.map": "/static/css/main.5edd4b9a.css.map",
+    "main.5df54da0.js.map": "/static/js/main.5df54da0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5edd4b9a.css",
+    "static/js/main.5df54da0.js"
+  ]
+}
