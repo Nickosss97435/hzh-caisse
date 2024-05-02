@@ -1,0 +1,45 @@
+.login{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-family: "Source Sans Pro", sans-serif;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.57),
+      rgba(20, 20, 20, 0.688)
+    ), url("../../assets/img/png/Golden3Dlogo.png");
+    background-size: cover; /* Pour que l'image de fond couvre toute la taille du corps */
+    background-repeat: no-repeat; /* Pour éviter la répétition de l'image de fond */
+
+    form{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      input{
+        width: 200px;
+        height: 30px;
+        margin: 10px;
+        border: none;
+      }
+
+      button{
+        width: auto;
+        height: 30px;
+        border: none;
+        background-color: rgb(190, 171, 0);
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      span{
+        font-size: 22px;
+        background-color: rgba(255, 198, 198, 0.599);
+        color: rgb(159, 2, 2);
+        margin-top: 10px;
+      }
+    }
+}

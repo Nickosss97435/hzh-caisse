@@ -1,0 +1,77 @@
+.datatable {
+  background-color: #f5f5f5; /* Light gray background */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  
+  .datatableTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    
+    h3 {
+      font-size: 20px;
+      color: #333; /* Darker text color */
+    }
+  }
+  
+  .totalsContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    
+    .totalItem {
+      text-align: center;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #eee; /* Light background for totals */
+      margin: 5px;
+      
+      h3 {
+        font-size: 16px;
+        color: #666;
+      }
+      
+      h6 {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+  }
+  
+  .datagrid {
+    /* Use MUI's DataGrid styling options here */
+  }
+  
+  .datagrid:hover tr {
+    background-color: #e9e9e9; /* Light background on hover */
+  }
+  
+  .submitButton {
+    background-color: #4CAF50; /* Green for submit button */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .openOdooButton {
+    background-color: #673AB7; /* Purple for Odoo button */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  input[type="file"] {
+    background-color: #e0e0e0; /* Light gray background for file input */
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
