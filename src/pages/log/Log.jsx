@@ -5,10 +5,11 @@ import DatatableLog from "../../components/datatablelog/DatatableLog";
 
 const Log = () => {
   return (
-    <div className="list">
+    <div className="home">
+      <Navbar/>
       <Sidebar/>
-      <div className="listContainer">
-        <Navbar/>
+      <div className="homeContainer">
+        
         <DatatableLog />
       </div>
     </div>

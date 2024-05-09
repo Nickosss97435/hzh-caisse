@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// Dans FermetureModal.js
+import React, { useRef, useState, useEffect } from "react"; 
+import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 import './fermeture.scss';
 
-export default function FermetureModal({ onClose }) {
-  const navigate = useNavigate();
+export default function FermetureModal({ onClose, updateTotalFermeture }) {
 
   const [validation, setValidation] = useState("");
   const [amounts, setAmounts] = useState({
@@ -23,23 +24,7 @@ export default function FermetureModal({ onClose }) {
     '0.01€': 0
   });
 
-  // Ajouter les valeurs correspondantes à chaque devise
-  const currencyValues = {
-    '200€': 200,
-    '100€': 100,
-    '50€': 50,
-    '20€': 20,
-    '10€': 10,
-    '5€': 5,
-    '2€': 2,
-    '1€': 1,
-    '0.50€': 0.5,
-    '0.20€': 0.2,
-    '0.10€': 0.1,
-    '0.05€': 0.05,
-    '0.02€': 0.02,
-    '0.01€': 0.01
-  };
+  const [totalFermeture, setTotalFermeture] = useState("0.00");
 
   const inputs = useRef([]);
 
@@ -49,8 +34,37 @@ export default function FermetureModal({ onClose }) {
     }
   };
 
+  useEffect(() => {
+    calculateAndUpdateTotalFermeture(); // Mettre à jour le total de la fermeture dès le début
+  }, []); // Utilisez une dépendance vide pour exécuter ce code une seule fois au montage
+
   const formRef = useRef();
 
+  useEffect(() => {
+    calculateAndUpdateTotalFermeture(); // Mettre à jour le total de la fermeture à chaque modification des montants
+  }, [amounts]); // Utilisez amounts comme dépendance pour exécuter ce code à chaque modification des montants
+
+  const calculateAndUpdateTotalFermeture = () => {
+    let total = 0;
+    for (const [currency, quantity] of Object.entries(amounts)) {
+      total += quantity * parseFloat(currency.split('€')[0]);
+    }
+    setTotalFermeture(total.toFixed(2)); // Mettre à jour l'état totalFermeture
+    updateTotalFermeture(total.toFixed(2)); // Mettre à jour le total de la fermeture dans DatatableOrder
+  };
+  
+  const handleForm = async (e) => {
+    e.preventDefault();
+    try {
+      await updateAmountsInFirestore();
+      updateTotalCaisseInFirestore();
+      setValidation("");
+      onClose(totalFermeture); // Passer le total à DatatableOrder
+    } catch {
+      setValidation("Woops, votre caisse n'est pas bonne");
+    }
+  };
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setAmounts(prevAmounts => ({
@@ -58,27 +72,38 @@ export default function FermetureModal({ onClose }) {
       [name]: parseFloat(value) || 0
     }));
   };
+  
 
-  const calculateTotal = () => {
-    let total = 0;
-    for (const [currency, quantity] of Object.entries(amounts)) {
-      total += quantity * currencyValues[currency]; // Multiplier la quantité par la valeur de la devise
-    }
-    return total.toFixed(2);
-  };
-
-  // Calculer la valeur totale pour chaque devise
-  const calculateCurrencyTotal = (currency) => {
-    return (amounts[currency] * currencyValues[currency]).toFixed(2);
-  };
-
-  const handleForm = async (e) => {
-    e.preventDefault();
+  const updateAmountsInFirestore = async () => {
     try {
-      setValidation("");
-      navigate("/order");
-    } catch {
-      setValidation("Woops, votre caisse n'est pas bonne");
+      const currencies = Object.keys(amounts);
+      const promises = currencies.map(async (currency) => {
+        const currencyDocRef = doc(db, "caisses", "3", "FondCaisse", currency);
+        await updateDoc(currencyDocRef, {
+          qts: amounts[currency].toString()
+        });
+      });
+      await Promise.all(promises);
+    } catch (error) {
+      console.error("Error updating data in Firestore:", error);
+      throw error;
+    }
+  };
+
+  const updateTotalCaisseInFirestore = async () => {
+    try {
+      const totalCaisseRef = doc(db, "caisses", "3", "FondCaisse", "totalcaisse");
+      const totalCaisseDocSnap = await getDoc(totalCaisseRef);
+      if (totalCaisseDocSnap.exists()) {
+        await updateDoc(totalCaisseRef, { 
+          sommes: totalFermeture
+        });
+      } else {
+        console.log("Document for totalcaisse not found.");
+      }
+    } catch (error) {
+      console.error("Error updating total caisse in Firestore:", error);
+      throw error;
     }
   };
 
@@ -89,13 +114,12 @@ export default function FermetureModal({ onClose }) {
 
   return (
     <div className="position-fixed top-0 left-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-10" style={{ zIndex: 9999 }}>
-      
       <div className="position-relative " style={{ minWidth: "400px", zIndex: 10000 }}>
         <div className="modal-dialog">
           <div className="modal-content ">
             <div className="modal-header">
               <h5 className="modal-title">Fermeture Caisse</h5>
-              <div>Total: {calculateTotal()} €</div> {/* Affichage du total */}
+              <div>Total: {totalFermeture} €</div>
               <button onClick={closeModal} type="button" className="btn-close"></button>
             </div>
             <div className="modal-body" style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}>
@@ -113,7 +137,7 @@ export default function FermetureModal({ onClose }) {
                       value={amount} 
                       onChange={handleInputChange} 
                     />
-                    <span>Total {calculateCurrencyTotal(currency)} €</span> {/* Affichage de la valeur totale */}
+                    <span>Total {(amount * parseFloat(currency.split('€')[0])).toFixed(2)} €</span>
                   </div>
                 ))}
                 <p className="text-danger mt-1">{validation}</p>

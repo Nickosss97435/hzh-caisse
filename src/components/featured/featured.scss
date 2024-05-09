@@ -4,6 +4,13 @@
   box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
   padding: 10px;
 
+  .link-icon {
+    cursor: pointer;
+    &:hover {
+      color: #e4a800;
+    }
+  }
+
   .top {
     display: flex;
     align-items: center;

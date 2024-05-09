@@ -1,7 +1,39 @@
-.order {
+.home {
   display: flex;
   width: 100%;
-  .orderContainer {
-    flex: 6;
+  flex-direction: column;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .homeContainer {
+    flex: 1;
+    // padding: 20px;
+    display: flex;
+    flex-direction: column;
+
+    .widgets,
+    .charts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      @media (max-width: 768px) {
+        display: contents;
+      }
+    }
+
+    .listContainer {
+      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      padding: 20px;
+      margin: 20px;
+
+      .listTitle {
+        font-weight: 500;
+        color: gray;
+        margin-bottom: 15px;
+      }
+    }
   }
 }

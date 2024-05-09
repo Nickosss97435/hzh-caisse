@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { deleteDoc, doc, addDoc, collection, getDoc, where, query, getDocs } from "firebase/firestore";
+import FermetureModal from "../fermeture/FermetureModal";
+import { deleteDoc, doc, addDoc, collection, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import * as XLSX from 'xlsx';
 
@@ -13,7 +14,23 @@ const DatatableOrder = () => {
   const [totalCaisse, setTotalCaisse] = useState(0);
   const [totalSortiesJour, setTotalSortiesJour] = useState(0); // Ajout du state pour le total des sorties du jour
   const [journalTotalEspeces, setJournalTotalEspeces] = useState(0); // Ajout du state pour le total en espèces du journal
+  const [fermetureModalVisible, setFermetureModalVisible] = useState(false);
+  const [totalFermeture, setTotalFermeture] = useState(0); // État pour stocker le total de fermeture
 
+  // Déclarez la fonction de mise à jour du total de fermeture
+  const updateTotalFermeture = (value) => {
+    setTotalFermeture(value);
+  };
+
+  // ---------------------------- Ouverture et fermeture de la Modal Fermeture ---------------------------- //
+  const handleOpenFermetureModal = () => {
+    setFermetureModalVisible(true);
+  };
+
+  const handleCloseFermetureModal = (totalFermetureValue) => {
+    setFermetureModalVisible(false);
+    setTotalFermeture(totalFermetureValue); // Mettre à jour totalFermeture
+  };
   // ---------------------------- Récupération du total de la caisse ---------------------------- //
   useEffect(() => {
     const fetchTotalCaisse = async () => {
@@ -167,6 +184,7 @@ const handleValidate = async () => {
       );
       console.log("Données envoyées avec succès à Firestore !");
       setExcelData([]);
+      window.location.reload();
     } catch (error) {
       console.error("Erreur lors de l'envoi des données à Firestore :", error);
     }
@@ -199,37 +217,43 @@ const handleValidate = async () => {
     },
   ];
 
+// ---------------------------- Déclarez une fonction pour mettre à jour le total de fermeture ---------------------------- //
+// Ajoutez un nouvel état pour gérer totalFermeture dans DatatableOrder
+
+
+// Mise à jour de la valeur de totalFermeture lors de la fermeture de FermetureModal
+// const handleCloseFermetureModal = (totalFermetureValue) => {
+//   setFermetureModalVisible(false);
+//   setTotalFermeture(totalFermetureValue); // Mettre à jour totalFermeture
+// };
   // ---------------------------- Calcul du total en caisse et différence ---------------------------- //
   const totalEnCaisse = totalCaisse - totalSortiesJourFormatted + journalTotalEspeces;
-  const differenceCaisse = totalEnCaisse - totalCaisse;
+  const differenceCaisse = 0 + totalFermeture - totalEnCaisse;
 
-  // Détermination de la classe en fonction de la valeur de differenceCaisse
-let differenceCaisseClass = "";
-if (differenceCaisse < 0) {
-  differenceCaisseClass = "text-danger"; // Rouge pour une différence négative
-} else if (differenceCaisse === 0) {
-  differenceCaisseClass = "text-success"; // Vert pour une différence nulle
-} else {
-  differenceCaisseClass = "text-warning"; // Jaune pour une différence positive
-}
+   // ---------------------------- Modifier la couleur du message d'alerte en fonction de la valeur de differenceCaisse ---------------------------- //
+  let differenceCaisseClass = "";
+  if (differenceCaisse < 0) {
+    differenceCaisseClass = "text-danger"; // Rouge pour une différence négative
+  } else if (differenceCaisse === 0) {
+    differenceCaisseClass = "text-success"; // Vert pour une différence nulle
+  } else {
+    differenceCaisseClass = "text-warning"; // Jaune pour une différence positive
+  }
 
   return (
     <div className="datatable">
       <div className="datatableTitle">
         Transaction
       </div>
-      
       <div className="totalsContainer">
         <div className="totalItem">
           <h3>Ouverture Caisse</h3>
           <h6>{totalCaisse} €</h6>
         </div>
-
         <div className="totalItem">
           <h3>Total Sorties du Jour</h3>
           <h6 className="text-danger">{totalSortiesJourFormatted} €</h6>
         </div>
-
         <div className="totalItem">
           <h3>Totaux par Journal</h3>
           {Object.entries(journalTotals).map(([journal, total]) => (
@@ -238,63 +262,54 @@ if (differenceCaisse < 0) {
             </h6>
           ))}
         </div>
-
         <div className="totalItem">
           <h3>Total Transactions</h3>
           <h6>{totalGeneral.toFixed(2)} €</h6>
         </div>
-
         <div className="totalItem">
             <h3>Total en Caisse</h3>
             <h6 className="text-success">{totalEnCaisse.toFixed(2)} €</h6>
-          </div>
-
+        </div>
         <div className="totalItem">
             <h3>Fermeture Caisse</h3>
-            <h6 className="text-success">{totalEnCaisse.toFixed(2)} €</h6>
+            <h6 className="text-success">{totalFermeture} €</h6>
+        </div>
+      </div>
+      <div className="totalsContainer">
+          <div className="totalItem">
+            <input className="downloadxlsx pe-5" type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} />
+            <button className="openOdooButton btn-purple  ms-5" onClick={handleOpenOdoo} >
+              Odoo
+            </button>
+            <button className="submitButton ms-5 mt-5" type="submit" onClick={handleValidate} >
+              Valider
+            </button>
+            <button className="fermetureButton ms-5 mt-5" onClick={handleOpenFermetureModal}>
+              Fermeture
+            </button>
+            
+            {fermetureModalVisible && <FermetureModal onClose={handleCloseFermetureModal} updateTotalFermeture={updateTotalFermeture} />}
           </div>
-          
-      </div>
-      <div className="totalItem">
-      <div className="totalItem">
-  <h6 className={differenceCaisseClass}>Différence: {differenceCaisse.toFixed(2)} €</h6>
-  {differenceCaisse < 0 && differenceCaisse > -10 && (
-    <p className="text-warning">Attention : la caisse est inférieure à la valeur attendue.</p>
-  )}
-  {differenceCaisse < -10 && (
-    <p className="text-danger">Attention : la caisse est très en dessous de la valeur attendue ! Merci de la vérifier.</p>
-  )}
-  {differenceCaisse > 0 && differenceCaisse < 10 && (
-    <p className="text-warning">Attention : la caisse est supérieure à la valeur attendue.</p>
-  )}
-  {differenceCaisse > 10 && (
-    <p className="text-danger">Attention : la caisse est très au-dessus de la valeur attendue ! Merci de la vérifier.</p>
-  )}
-</div>
+        </div>
+        <h6 className={differenceCaisseClass}>Différence: {differenceCaisse.toFixed(2)} €</h6>
+          {differenceCaisse === 0 && (
+            <p className="text-success">Super votre caisse est bonne.</p>
+          )}
+          {differenceCaisse < 0 && differenceCaisse > -10 && (
+            <p className="text-warning">Attention : la caisse est inférieure à la valeur attendue.</p>
+          )}
+          {differenceCaisse < -10 && (
+            <p className="text-danger">Attention : la caisse est très en dessous de la valeur attendue ! Merci de la vérifier.</p>
+          )}
+          {differenceCaisse > 0 && differenceCaisse < 10 && (
+            <p className="text-warning">Attention : la caisse est supérieure à la valeur attendue.</p>
+          )}
+          {differenceCaisse > 10 && (
+            <p className="text-danger">Attention : la caisse est très au-dessus de la valeur attendue ! Merci de la vérifier.</p>
+          )}
+        <div className="totalItem">
 
-
-      <input
-        className="me-5 pb-5"
-        type="file"
-        accept=".xlsx, .xls"
-        onChange={handleExcelUpload}
-      />
-      <button
-        className="openOdooButton btn-purple  ms-5"
-        onClick={handleOpenOdoo}
-      >
-        Odoo
-      </button>
-      <button
-        className="submitButton ms-5"
-        type="submit"
-        onClick={handleValidate}
-      >
-        Valider
-      </button>
-      
-      
-      </div>
+    </div>
       <DataGrid
         className="datagrid"
         rows={excelData}

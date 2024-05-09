@@ -9,10 +9,10 @@ import {
 } from "recharts";
 
 const data = [
-  { name: "Janvier", Total: 24241.38 },
-  { name: "Fevrier", Total: 23951.81 },
-  { name: "Mars", Total: 15528.77 },
-  { name: "Avril", Total: 20848.67 },
+  { name: "Janvier", Total: 29800.41 },
+  { name: "Fevrier", Total: 72246.29 },
+  { name: "Mars", Total: 57787.14 },
+  { name: "Avril", Total: 94082.54 },
 
 ];
 

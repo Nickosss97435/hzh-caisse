@@ -5,10 +5,10 @@ import DatatableSorties from "../../components/datatablesorties/DatatableSorties
 
 const LogSorties = () => {
   return (
-    <div className="list">
+    <div className="home">
+      <Navbar/>
       <Sidebar/>
-      <div className="listContainer">
-        <Navbar/>
+      <div className="homeContainer">
         <DatatableSorties />
       </div>
     </div>

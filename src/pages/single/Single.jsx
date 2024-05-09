@@ -1,10 +1,8 @@
 import "./single.scss";
 import React, { useEffect, useState } from "react";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import Chart from "../../components/chart/Chart";
-import List from "../../components/table/Table";
 import { Link } from "react-router-dom";
 import { auth, db } from "../../firebase";
 
@@ -46,7 +44,7 @@ const Single = () => {
   }
 
   return (
-    <div className="single">
+    <div className="single"> 
       <Sidebar />
       <div className="singleContainer">
         <Navbar />
@@ -78,20 +76,13 @@ const Single = () => {
                   {userData.agence}
                   </span>
                 </div>
-                <div className="detailItem">
+                {/* <div className="detailItem">
                   <span className="itemKey">Role:</span>
                   <span className="itemValue">{userData.role}</span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
-          <div className="right">
-            <Chart aspect={3 / 1} title="User Spending ( Last 6 Months)" />
-          </div>
-        </div>
-        <div className="bottom">
-        <h1 className="title">Dernières transactions</h1>
-          <List/>
         </div>
       </div>
     </div>

@@ -1,8 +1,18 @@
 .sidebar {
-  // flex: 1;
-  border-right: 0.5px solid rgb(230, 227, 227);
-  min-height: 100vh;
-  background-color: white;
+  width: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #fff;
+  z-index: 1000;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+
+  &.open {
+    width: 200px;
+  }
 
   .top {
     height: 50px;
@@ -31,9 +41,9 @@
       padding: 0;
 
       .title {
-        font-size: 10px;
+        font-size: 13px;
         font-weight: bold;
-        color: #999;
+        color: #515151;
         margin-top: 15px;
         margin-bottom: 5px;
       }
@@ -41,8 +51,8 @@
       li {
         display: flex;
         align-items: center;
-        padding: 5px;
         cursor: pointer;
+        margin-top: 0.8rem;
 
         &:hover {
           background-color: #ece8ff;
@@ -51,40 +61,70 @@
         .icon {
           font-size: 18px;
           color: #cfa200;
+          &:hover {
+            color: #a27700;
+          }
         }
 
-        span{
-            font-size: 13px;
-            font-weight: 600;
-            color: #888;
-            margin-left: 10px;
+        span {
+          font-size: 13px;
+          font-weight: 600;
+          color: #888;
+          margin-left: 10px;
         }
       }
+
+      
     }
   }
 
-  .bottom{
-      display: flex;
-      align-items: center;
-      margin: 10px;
 
-      .colorOption{
-          width: 20px;
-          height: 20px;
-          border-radius: 5px;
-          border: 1px solid #cfa200;
-          cursor: pointer;
-          margin: 5px;
+  .bottom {
+    display: flex;
+    align-items: center;
+    margin: 30px;
 
-          &:nth-child(1){
-              background-color: whitesmoke;
-          }
-          &:nth-child(2){
-              background-color: #333;
-          }
-          &:nth-child(3){
-              background-color: darkblue;
-          }
+    .colorOption {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      border: 1px solid #cfa200;
+      cursor: pointer;
+      margin: 5px;
+
+      &:nth-child(1) {
+        background-color: whitesmoke;
       }
+      &:nth-child(2) {
+        background-color: #333;
+      }
+      &:nth-child(3) {
+        background-color: darkblue;
+      }
+    }
+  }
+  .toggle {
+    cursor: pointer;
+    font-size: 30px;
+    color: #cfa200;
+    list-style: none; /* Enlève le marqueur */
+    display: inline-block; /* Empêche l'affichage du marqueur de liste */
+  }
+  
+  
+}
+
+span .btn-toggle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin-left: 10px;
+  // height: 100%;
+  // background-color: #fff;
+  z-index: 1000;
+  margin-top: 20px;
+  color: #cfa200;
+  &:hover {
+    color: #a27700;
   }
 }

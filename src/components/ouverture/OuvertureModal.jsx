@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react"; 
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import './ouverture.scss';
@@ -23,11 +23,7 @@ export default function OuvertureModal({ onClose }) {
     '0.01€': 0
   });
 
-  useEffect(() => {
-    fetchAmountsFromFirestore();
-  }, []);
-
-  const fetchAmountsFromFirestore = async () => {
+  const fetchAmountsFromFirestore = useCallback(async () => {
     try {
       const currencies = Object.keys(amounts);
 
@@ -50,7 +46,11 @@ export default function OuvertureModal({ onClose }) {
     } catch (error) {
       console.error("Error fetching data from Firestore:", error);
     }
-  };
+  }, [amounts]);
+
+  useEffect(() => {
+    fetchAmountsFromFirestore();
+  }, [fetchAmountsFromFirestore]);
 
   const inputs = useRef([]);
 
@@ -119,8 +119,7 @@ export default function OuvertureModal({ onClose }) {
       const totalCaisseDocSnap = await getDoc(totalCaisseRef);
       
       if (totalCaisseDocSnap.exists()) {
-        const totalCaisseData = totalCaisseDocSnap.data();
-        await updateDoc(totalCaisseRef, {
+        await updateDoc(totalCaisseRef, { 
           sommes: calculateTotal()
         });
       } else {
@@ -138,13 +137,13 @@ export default function OuvertureModal({ onClose }) {
   };
 
   return (
-    <div className="position-fixed top-0 left-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75" style={{ zIndex: 9999 }}>
+    <div className="position-fixed top-0 left-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-10" style={{ zIndex: 9999 }}>
       
       <div className="position-relative " style={{ minWidth: "400px", zIndex: 10000 }}>
         <div className="modal-dialog">
           <div className="modal-content ">
             <div className="modal-header">
-              <h5 className="modal-title">Ouverture Caisse</h5>
+              <h5 className="modal-title">Ouverture Caisse </h5>
               <div>Total: {calculateTotal()} €</div>
               <button onClick={closeModal} type="button" className="btn-close"></button>
             </div>

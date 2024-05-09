@@ -75,37 +75,5 @@
         cursor: pointer;
       }
     }
-  
-    .submitButton {
-      width: 200px;
-      height: 30px;
-      border: none;
-      background-color: green; /* Couleur vert */
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-right: 10px; /* Ajout de marge à droite */
-    }
-  
-    .openOdooButton {
-      width: 200px;
-      height: 30px;
-      border: none;
-      background-color: #6D4964; /* Couleur du logo Odoo */
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-right: 10px; /* Ajout de marge à droite */
-    }
-  
-    input[type="file"] {
-      width: 200px;
-      height: 30px;
-      border: none;
-      color: rgb(109, 109, 109);
-      font-weight: bold;
-      cursor: pointer;
-      margin-right: 10px; /* Ajout de marge à droite */
-    }
   }
   

@@ -82,7 +82,6 @@ const DatatableEntrees = () => {
     <div className="datatable">
       <div className="datatableTitle">
       Encaissements
-      
       </div>
       <DataGrid
         className="datagrid"

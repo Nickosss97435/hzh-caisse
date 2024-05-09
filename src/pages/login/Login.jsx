@@ -3,7 +3,9 @@ import "./login.scss";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
-import {AuthContext} from "../../context/AuthContext"
+import {AuthContext} from "../../context/AuthContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [error, setError] = useState(false);
@@ -29,6 +31,8 @@ const Login = () => {
       });
   };
 
+  const notify = () => toast("Authentification en cours. S'il vous plaît, attendez");
+
   return (
     <div className="login">
       
@@ -46,7 +50,8 @@ const Login = () => {
           autoComplete="current-password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button className=" btn btn-dark" type="submit">Se connecter</button>
+        <button className=" btn btn-dark" type="submit" onClick={notify}>Se connecter</button>
+        <ToastContainer />
         {error && <span>Mauvais email ou mot de passe !</span>}
       </form>
     </div>

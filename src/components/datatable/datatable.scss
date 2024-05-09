@@ -76,3 +76,11 @@
     }
   }
 }
+
+.icon {
+  // color: chartreuse;
+  margin-right: 5px;
+  &:hover {
+    color: rgb(0, 195, 36);
+  }
+}

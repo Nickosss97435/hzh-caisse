@@ -67,7 +67,7 @@ export default function SortiesModal({ onClose }) {
                     id="Date" 
                     name="Date" 
                     defaultValue={currentDate}
-                    readOnly 
+                    // readOnly 
                   />
                 </div>
 

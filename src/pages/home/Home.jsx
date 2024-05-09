@@ -1,35 +1,35 @@
+import "./home.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import "./home.scss";
-//import Widget from "../../components/widget/Widget";
-//import Featured from "../../components/featured/Featured";
-//import Chart from "../../components/chart/Chart";
-//import Table from "../../components/table/Table";
-import DatatableLog from "../../components/datatablelog/DatatableLog";
-import Profiles from "../profiles/Profiles";
-import ProfilesCard from "../../components/profiles/ProfilesCard";
+import WidgetCA from "../../components/widgetca/WidgetCA";
+import Featured from "../../components/featured/Featured";
+import BarChart from "../../components/barchart/BarChart";
+import DoughnutChart from "../../components/doughnutchart/DoughnutCart";
+//import LineChart from "../../components/linechart/LineChart";
 
 const Home = () => {
   return (
     <div className="home">
       <Sidebar />
       <div className="homeContainer">
-        <Navbar />
-        {/* <div className="widgets">
-          <Widget type="user" />
-          <Widget type="product" />
-          <Widget type="order" />
-          <Widget type="earning" />
+      <Navbar />
+        <div className="listContainer">
+        <div className="listTitle">Tableau de bord</div>
+        <div className="widgets" >
+          <WidgetCA type="jour" />
+          <WidgetCA type="semaine" />
+          <WidgetCA type="mois" />
+          <WidgetCA type="annee" />
         </div>
         <div className="charts">
           <Featured />
-          <Chart title="6 derniers mois (revenus)" aspect={2 / 1} />
-        </div> */}
-        <div className="listContainer">
-          <div className="listTitle">Tableau de bord</div>
-          <ProfilesCard/>
-          <DatatableLog />
-          {/* <DatatableLog /> */}
+          <BarChart title="12 mois (CA €)"/>
+          {/* <Chart title="6 derniers mois (revenus)" aspect={2 / 1} /> */}
+        </div>
+        <div className="charts"> 
+        {/* <ProfilesCard /> */}
+        <DoughnutChart />
+        </div>
         </div>
       </div>
     </div>

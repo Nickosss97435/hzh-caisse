@@ -7,7 +7,7 @@ import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import MyPdfDocument from '../../rapports/MyPdfDocument'; // Assurez-vous que le chemin d'importation est correct
-import axios from 'axios'; // Importez axios pour effectuer des appels API
+//import axios from 'axios'; // Importez axios pour effectuer des appels API
 
 const Rapport1 = () => {
   const [data, setData] = useState([]);
@@ -57,24 +57,24 @@ const Rapport1 = () => {
     return groupedData;
   };
 
-  // Fonction pour envoyer le document par email
-  const sendEmail = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/send-email', data); // Appelez l'API backend pour envoyer l'email
-      console.log(response.data); // Affichez la réponse du serveur
-    } catch (error) {
-      console.error("Error sending email:", error);
-    }
-  };
+  // Fonction pour envoyer le document par email via une API backend
+  // const sendEmail = async () => {
+  //   try {
+  //     const response = await axios.post('http://localhost:5000/send-email', data); // Appelez l'API backend pour envoyer l'email
+  //     console.log(response.data); // Affichez la réponse du serveur
+  //   } catch (error) {
+  //     console.error("Error sending email:", error);
+  //   }
+  // };
 
   return (
     <div className="list">
-      <Sidebar />
+      {/* <Sidebar />
       <div className="listContainer">
-        <Navbar />
+        <Navbar /> */}
         <PDFDownloadLink className="icon" document={<MyPdfDocument data={data} />} fileName="rapport.pdf">
           {({ blob, url, loading: downloadLoading, error }) => (
-            downloadLoading ? <CachedIcon fontSize="small" /> : <CloudUploadIcon fontSize="small" onClick={sendEmail} />
+            downloadLoading ? <CachedIcon fontSize="small" /> : <CloudUploadIcon fontSize="small" onClick={'sendEmail'} />
           )}
         </PDFDownloadLink>
         <div className="Container">
@@ -89,7 +89,7 @@ const Rapport1 = () => {
             </PDFViewer>
           )}
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 }

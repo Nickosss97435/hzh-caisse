@@ -1,45 +1,57 @@
 export const userInputs = [
     {
-      id: "username",
-      label: "Nom d'utilisateur",
+      id: "user",
+      label: "Identifiant",
       type: "text",
-      placeholder: "Nicolas_QUÉRAT",
+      placeholder: "Identifiant",
     },
     {
-      id: "displayName",
+      id: "username",
+      label: "Surnom",
+      type: "text",
+      placeholder: "Surnom",
+    },
+    {
+      id: "name",
       label: "Nom & surnom",
       type: "text",
-      placeholder: "Nicolas QUÉRAT",
+      placeholder: "Prénom & NOM",
     },
     {
       id: "email",
       label: "Email",
       type: "mail",
-      placeholder: "nquerat@mondistri.re",
+      placeholder: "Email",
     },
     {
       id: "phone",
       label: "Téléphone",
       type: "text",
-      placeholder: "+262 692 06 25 23",
+      placeholder: "Téléphone",
     },
+    // {
+    //   id: "password",
+    //   label: "Mot de Passe",
+    //   type: "password",
+    // },
     {
-      id: "password",
-      label: "Mot de Passe",
-      type: "password",
-    },
-    {
-      id: "address",
-      label: "Addresse",
+      id: "agence",
+      label: "Agence",
       type: "text",
-      placeholder: "16 Bis Rue Claude Chappe, ZAC 2000",
+      placeholder: "Agence",
     },
-    {
-      id: "country",
-      label: "Pays",
-      type: "text",
-      placeholder: "La Réunion",
-    },
+    // {
+    //   id: "role",
+    //   label: "Role",
+    //   type: "text",
+    //   placeholder: "Role",
+    // },
+    // {
+    //   id: "avatar",
+    //   label: "Photo",
+    //   type: "url",
+    //   placeholder: "Photo",
+    // },
   ];
   
   export const productInputs = [

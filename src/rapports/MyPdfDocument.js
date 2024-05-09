@@ -1,89 +1,112 @@
 import React, { useState, useEffect } from 'react';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import {
-    collection,
-    getDocs,
-} from "firebase/firestore";
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
+import Logo from '../assets/img/logo192.png';
 
-const MyPdfDocument = () => {
-  const [data, setData] = useState([]);
+const MyPdfDocument = ({ selectedDate }) => {
+  const [transactionsData, setTransactionsData] = useState([]);
+  const [fondCaisseData, setFondCaisseData] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const transactionsSnapshot = await getDocs(collection(db, "caisses/3/transactions"));
-        const transactionsData = transactionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (selectedDate) {
+          const formattedDate = selectedDate.split('-').reverse().join('/');
 
-        const sortiesSnapshot = await getDocs(collection(db, "caisses/3/sorties"));
-        const sortiesData = sortiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        // Combinaison des données des transactions et des sorties
-        const allData = [...transactionsData, ...sortiesData];
-
-        // Tri des données par date
-        allData.sort((a, b) => new Date(a.Date) - new Date(b.Date));
-
-        // Regroupement des transactions par date
-        const groupedData = groupByDate(allData);
-
-        setData(groupedData);
+          const transactionsQuery = query(collection(db, "caisses/3/transactions"), where("Date", "==", formattedDate));
+          const transactionsSnapshot = await getDocs(transactionsQuery);
+          const transactions = transactionsSnapshot.docs.map(doc => doc.data());
+          setTransactionsData(transactions);
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching transaction data:", error);
+      }
+    };
+
+    const fetchFondCaisseData = async () => {
+      try {
+        const fondCaisseSnapshot = await getDocs(collection(db, "caisses/3/FondCaisse"));
+        const fondCaisse = fondCaisseSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Suppression du signe € et tri des données en fonction des valeurs numériques
+        const sortedFondCaisse = fondCaisse.sort((a, b) => {
+          const valueA = parseFloat(a.id.replace("€", ""));
+          const valueB = parseFloat(b.id.replace("€", ""));
+          return valueA - valueB;
+        });
+        setFondCaisseData(sortedFondCaisse);
+      } catch (error) {
+        console.error("Error fetching fond caisse data:", error);
       }
     };
 
     fetchData();
+    fetchFondCaisseData();
+  }, [selectedDate]);
+  
+  useEffect(() => {
+    const currentUser = "Nom de l'utilisateur";
+    setCurrentUser(currentUser);
   }, []);
-
-  // Fonction utilitaire pour regrouper les transactions par date
-  const groupByDate = (data) => {
-    const groupedData = {};
-
-    data.forEach(item => {
-      const date = item.Date;
-      if (!groupedData[date]) {
-        groupedData[date] = [];
-      }
-      groupedData[date].push(item);
-    });
-
-    return groupedData;
-  };
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-
         <View style={styles.header}>
-          {/* En-tête de l'entreprise */}
-          <Text src="../assets/img/logo.svg"></Text>
-          <Text>HZH-OUEST</Text>
-          <Text>16 Bis Rue Claude Chappe</Text>
-            <Text> ZAC 2000, Le Port</Text>
-          <Text>+262 262 25 99 99</Text>
-          {/* Autres informations d'entreprise */}
+          <Image style={styles.image} src={Logo} />
+          <View style={styles.headerText}>
+            <Text style={styles.societe}>HZH-OUEST</Text>
+            <Text style={styles.address}>16 Bis Rue Claude Chappe</Text>
+            <Text style={styles.address}>ZAC 2000, Le Port</Text>
+          </View>
         </View>
-
         <View style={styles.content}>
           <Text>Journal de Caisse Ouest :</Text>
-          {/* Affichage des données */}
-          {Object.keys(data).map((date, index) => (
-            <View key={index}>
-              <Text style={styles.date}>{date}</Text>
-              {data[date].map((item, i) => (
-                <View key={i} style={styles.transaction}>
-                  <Text>Date: {item.Date}</Text>
-                  <Text>Journal: {item.Journal}</Text>
-                  <Text>Montant: {item.Montant}</Text>
-                  <Text>Mémo: {item.Mémo}</Text>
-                  <Text>Nom: {item.Nom}</Text>
-                  <Text>Partenaire: {item.Partenaire}</Text>
-                </View>
-              ))}
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={styles.columnHeader}>Date</Text>
+              <Text style={styles.columnHeader}>Nom</Text>
+              <Text style={styles.columnHeader}>Partenaire</Text>
+              <Text style={styles.columnHeader}>Mémo</Text>
+              <Text style={styles.columnHeader}>Journal</Text>
+              <Text style={styles.columnHeader}>Montant</Text>
             </View>
-          ))}
+            {transactionsData.map((item, index) => (
+              <View key={index} style={styles.tableRow}>
+                <Text style={styles.cell}>{item.Date}</Text>
+                <Text style={styles.cell}>{item.Nom}</Text>
+                <Text style={styles.cell}>{item.Partenaire}</Text>
+                <Text style={styles.cell}>{item.Mémo}</Text>
+                <Text style={styles.cell}>{item.Journal}</Text>
+                <Text style={styles.cell}>{item.Montant} €</Text>
+              </View>
+            ))}
+          </View>
         </View>
+        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (`${pageNumber} / ${totalPages}`)} fixed />
+        <Text style={styles.footerText}>{currentUser} - {new Date().toLocaleDateString()}</Text>
+      </Page>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.content}>
+          <Text>État de la caisse :</Text>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={styles.columnHeader}>Monnaie</Text>
+              <Text style={styles.columnHeader}>Quantité</Text>
+              <Text style={styles.columnHeader}>Total</Text>
+            </View>
+            {fondCaisseData.map((item, index) => (
+              <View key={index} style={styles.tableRow}>
+                <Text style={styles.cell}>{item.id}</Text>
+                <Text style={styles.cell}>{item.qts}</Text>
+                <Text style={styles.cell}>{parseFloat(item.qts) * parseFloat(item.id.replace("€", ""))} €</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (`${pageNumber} / ${totalPages}`)} fixed />
+        <Text style={styles.footerText}>{currentUser} - {new Date().toLocaleDateString()}</Text>
       </Page>
     </Document>
   );
@@ -95,16 +118,60 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 20,
+    flexDirection: 'row',
+  },
+  image: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+  },
+  headerText: {
+    flex: 1,
   },
   content: {
     marginBottom: 20,
   },
-  date: {
-    marginBottom: 10,
+  table: {
+    border: '1 solid black',
+  },
+  societe: {
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  transaction: {
-    marginBottom: 10,
+  address: {
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottom: '1 solid black',
+  },
+  columnHeader: {
+    flex: 1,
+    fontSize: 10,
+    fontWeight: 'bold',
+    padding: 5,
+    backgroundColor: 'green',
+    color: '#FFFFFF',
+  },
+  cell: {
+    flex: 1,
+    padding: 5,
+    fontSize: 8,
+  },
+  pageNumber: {
+    position: 'absolute',
+    fontSize: 10,
+    bottom: 10,
+    right: 10,
+    color: 'grey',
+  },
+  footerText: {
+    position: 'absolute',
+    fontSize: 10,
+    bottom: 10,
+    left: 10,
+    color: 'grey',
   },
 });
 

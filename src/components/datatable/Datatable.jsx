@@ -1,6 +1,7 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { userColumns, userRows } from "../../datatablesource";
+import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import { userColumns} from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, getDocs, deleteDoc, doc, onSnapshot,
@@ -63,9 +64,9 @@ const Datatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            {/* <Link to="/users/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">Voir</div>
-            </Link> */}
+            <Link to={`/users/edit/${params.row.id}`}>
+          <DriveFileRenameOutlineOutlinedIcon className="icon" />
+        </Link>
             <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}

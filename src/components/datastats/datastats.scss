@@ -1,0 +1,69 @@
+.stats {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center; /* Centrer le contenu */
+  }
+  
+  h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center; /* Centrer les éléments horizontalement */
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto; /* Ajout d'une barre de défilement horizontale si nécessaire */
+  }
+  
+  thead {
+    background-color: #f2f2f2;
+  }
+  
+  th {
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  tbody tr td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center; /* Centrer le contenu dans les cellules */
+  }
+  
+  input[type="number"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  /* Ajout de media queries pour rendre la mise en page responsive */
+  @media only screen and (max-width: 768px) {
+    .left {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center; /* Centrer les éléments horizontalement */
+    }
+    
+    table {
+      margin-bottom: 20px;
+      width: auto; /* Rétablir la largeur automatique pour s'adapter au contenu */
+      max-width: 100%; /* Limiter la largeur maximale à 100% de l'écran */
+    }
+  }
+  

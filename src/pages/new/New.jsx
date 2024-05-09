@@ -2,59 +2,56 @@ import "./new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useEffect, useState } from "react";
-import { addDoc, collection, doc, serverTimestamp, setDoc, } from "firebase/firestore";
-import { auth, db, storage } from "../../firebase";
+import React, { useEffect, useState } from "react";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { db, auth, storage } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
   const [data, setData] = useState({});
   const [per, setPerc] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const [ setLoading] = useState(false); // Utilisé pour afficher une indication de chargement, mais pas utilisé dans le code actuel
+  const [ setName] = useState(""); // Utilisé pour afficher le nom de l'image, mais pas utilisé dans le code actuel
 
   useEffect(() => {
     const uploadFile = () => {
       const name = new Date().getTime() + file.name;
+      setName(name); // Utilisation de 'name'
 
-      console.log(name);
       const storageRef = ref(storage, file.name);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Le téléchargement est " + progress + "% fait");
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setPerc(progress);
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Le téléchargement est suspendu");
-              break;
-            case "en cours d'exécution":
-              console.log("Le téléchargement est en cours");
-              break;
-            default:
-              break;
-          }
         },
         (error) => {
           console.log(error);
+          setLoading(false);
+          toast.error("Erreur lors du téléchargement de l'image.");
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setData((prev) => ({ ...prev, img: downloadURL }));
+            setLoading(false);
           });
         }
       );
     };
-    file && uploadFile();
+    if (file) {
+      setLoading(true);
+      uploadFile();
+    }
   }, [file]);
-
-  console.log(data);
 
   const handleInput = (e) => {
     const id = e.target.id;
@@ -66,26 +63,44 @@ const New = ({ inputs, title }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-      await setDoc(doc(db, "users", res.user.uid), {
-        ...data,
+      setLoading(true);
+      const res = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const user = res.user;
+  
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        agence: data.agence,
+        email: data.email,
+        username: data.username,
+        name: data.name, // Utilisation de 'name'
+        user: data.user,
+        phone: data.phone,
+        avatar: data.img,
+        role: data.role,
         timeStamp: serverTimestamp(),
       });
-      navigate(-1)
+  
+      toast.success("Le nouveau compte a été créé avec succès.");
+      setLoading(false);
+      setData({}); // Réinitialiser les données du formulaire
+      setFile(null); // Réinitialiser l'état de l'image
+      if (!auth.currentUser) {
+        navigate('/users');
+      }
     } catch (err) {
       console.log(err);
+      setLoading(false);
+      toast.error("Erreur lors de la création du compte.");
     }
   };
+  
 
   return (
     <div className="new">
       <Sidebar />
       <div className="newContainer">
         <Navbar />
+        <ToastContainer />
         <div className="top">
           <h1>{title}</h1>
         </div>
@@ -122,11 +137,12 @@ const New = ({ inputs, title }) => {
                     type={input.type}
                     placeholder={input.placeholder}
                     onChange={handleInput}
+                    value={data[input.id] || ''} // Ajout de la valeur de l'input
                   />
                 </div>
               ))}
               <button disabled={per !== null && per < 100} type="submit">
-              Envoyer
+                Envoyer
               </button>
             </form>
           </div>
