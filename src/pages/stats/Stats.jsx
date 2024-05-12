@@ -26,7 +26,7 @@ const Stats = () => {
                 <UpdateDataCA type="Fevrier" />
                 <UpdateDataCA type="Mars" />
                 <UpdateDataCA type="Avril" />
-                <UpdateDataCA type="Mais" />
+                <UpdateDataCA type="Mai" />
                 <UpdateDataCA type="Juin" />
                 <UpdateDataCA type="Juillet" />
                 <UpdateDataCA type="Aout" />

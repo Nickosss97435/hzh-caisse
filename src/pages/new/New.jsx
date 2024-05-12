@@ -17,8 +17,9 @@ const New = ({ inputs, title }) => {
   const [per, setPerc] = useState(null);
   const navigate = useNavigate();
 
-  const [ setLoading] = useState(false); // Utilisé pour afficher une indication de chargement, mais pas utilisé dans le code actuel
-  const [ setName] = useState(""); // Utilisé pour afficher le nom de l'image, mais pas utilisé dans le code actuel
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+ // Utilisé pour afficher le nom de l'image, mais pas utilisé dans le code actuel
 
   useEffect(() => {
     const uploadFile = () => {

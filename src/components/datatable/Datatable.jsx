@@ -20,7 +20,7 @@ const Datatable = () => {
            list.push({ id: doc.id, ...doc.data() });
          });
          setData(list);
-         console.log(list);
+         console.log("Liste des utilisateur récupèrées avec succès !");
        } catch (err) {
          console.log(err);
        }

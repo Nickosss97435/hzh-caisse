@@ -66,9 +66,10 @@ export default function OuvertureModal({ onClose }) {
     const { name, value } = e.target;
     setAmounts(prevAmounts => ({
       ...prevAmounts,
-      [name]: parseFloat(value) || 0
+      [name]: value === '' ? '' : parseFloat(value) // Assurez-vous de stocker la chaîne vide si l'entrée est vide
     }));
   };
+  
 
   const calculateTotal = () => {
     let total = 0;
@@ -159,7 +160,7 @@ export default function OuvertureModal({ onClose }) {
                       type="number" 
                       className="form-control bg-light" 
                       id={currency} 
-                      value={amount} 
+                      value={amount === '' ? '' : parseFloat(amount)} // Assurez-vous que la valeur est bien définie
                       onChange={handleInputChange} 
                     />
                     <span>Total {calculateCurrencyTotal(currency)} €</span>

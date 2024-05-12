@@ -29,23 +29,23 @@ export const userInputs = [
       type: "text",
       placeholder: "Téléphone",
     },
-    // {
-    //   id: "password",
-    //   label: "Mot de Passe",
-    //   type: "password",
-    // },
+    {
+      id: "password",
+      label: "Mot de Passe",
+      type: "password",
+    },
     {
       id: "agence",
       label: "Agence",
       type: "text",
       placeholder: "Agence",
     },
-    // {
-    //   id: "role",
-    //   label: "Role",
-    //   type: "text",
-    //   placeholder: "Role",
-    // },
+    {
+      id: "role",
+      label: "Role",
+      type: "text",
+      placeholder: "Role",
+    },
     // {
     //   id: "avatar",
     //   label: "Photo",

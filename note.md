@@ -1,4 +1,20 @@
 
+# GUIT HUB
+### Git Hub
+
+créer un nouveau repositorie
+sur VSCode: 
+git init
+git remote add origin https://github.com/Nickosss97435/
+git add .
+git commit -m "premier commit"
+git push origin master
+
+git add .
+git commit -m "deuxieme commit"
+git push origin master
+
+
 
 # Structure DB Firestore
 
@@ -123,8 +139,61 @@
 ### _____user
 ### _____username
 
-# __
+# __les règle Firestore Database
 
+//***************A l'origine: ******************/
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+
+<!--***************Sécurisation: règles de sécurité de base qui autorisent l'accès en lecture aux utilisateurs authentifiés et l'accès en écriture aux utilisateurs ayant le rôle d'administrateur******************-->
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Autoriser l'accès en lecture aux utilisateurs authentifiés
+    match /{document=**} {
+      allow read: if request.auth != null;
+    }
+
+    // Autoriser l'accès en écriture aux administrateurs
+    match /{document=**} {
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
+
+<!--Firestore Storage -->
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      // Vérifier si l'utilisateur est authentifié
+      allow read, write: if request.auth != null && 
+                            // Vérifier si l'utilisateur est administrateur
+                            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
 
 <!--************************************************************************************************************************* -->
 
@@ -724,3 +793,62 @@ export default function FermetureModal({ onClose, updateTotalFermeture })
 setTotalFermeture(total.toFixed(2)); // Mettre à jour l'état totalFermeture
     updateTotalFermeture(total.toFixed(2)); // Mettre à jour le total de la fermeture dans DatatableOrder
   };
+
+# hzholding 
+
+REACT_APP_FIREBASE_API_KEY  =  AIzaSyBFwAaOdkO60mjnmm8CAvyYXIw1dMYepnA
+REACT_APP_FIREBASE_AUTH_DOMAIN  =  hzholding.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID  =  hzholding
+REACT_APP_FIREBASE_STORAGE_BUCKET  =  hzholding.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID  =  971470248360
+REACT_APP_FIREBASE_APP_ID  =  1:971470248360:web:0166bbcdaae80d5c01259d
+REACT_APP_FIREBASE_MEASUREMENT_ID  =  G-PZ8VVP7E9V
+
+# gestion-caisse 
+
+REACT_APP_FIREBASE_API_KEY  =  AIzaSyB9tVMD6kLxYCCJKBd000iSAHaz9JTsdT4
+REACT_APP_FIREBASE_AUTH_DOMAIN  =  gestion-caisse-bfb3d.firebaseapp.com
+REACT_APP_FIREBASE_DATABASE_URL  =  https://gestion-caisse-bfb3d-default-rtdb.europe-west1.firebasedatabase.app
+REACT_APP_FIREBASE_PROJECT_ID  =  gestion-caisse-bfb3d
+REACT_APP_FIREBASE_STORAGE_BUCKET  =  gestion-caisse-bfb3d.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID  =  402222495757
+REACT_APP_FIREBASE_APP_ID  =  1:402222495757:web:40cf10aef77ddc22c1bd44
+REACT_APP_FIREBASE_MEASUREMENT_ID  =  G-PZ8VVP7E9V
+
+règle Firestore
+REGLE 1:
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+
+REGLE 2
+
+rules_version = '2';
+
+function isUserAuthentificated() {
+ return request.auth != null
+}
+
+function isUserOwner(ID_ouverture_caisse) {
+ return request.auth.uid == ID_ouverture_caisse
+}
+
+function isUserAdmin() {
+ return request.auth.token.admin == true
+}
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /Caisses/Agence_Ouest/Ouverture_caisse/{ID_ouverture_caisse} {
+      allow read, write: if isUserAuthentificated() && isUserOwner(ID_ouverture_caisse) || isUserAdmin();
+    }
+     
+  }
+}
